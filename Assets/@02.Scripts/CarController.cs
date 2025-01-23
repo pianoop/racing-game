@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public enum Dir
 {
@@ -14,12 +16,12 @@ public enum Dir
 public class CarController : MonoBehaviour
 {
     public Lane Road;
+    public UIManager UIController;
     private int mCurrentLaneNumber = 1;
     public float RemainGas { get; private set; }
     private float mConsumeGasPerSec = 10f;
     private float mMaxGas = 100f;
-
-
+    
     private void Start()
     {
         moveCar(Dir.None);
@@ -35,7 +37,14 @@ public class CarController : MonoBehaviour
     public void AddGas(float gas)
     {
         float nextGasRemain = RemainGas + gas;
-        RemainGas = mMaxGas < nextGasRemain ? mMaxGas : nextGasRemain;
+        nextGasRemain = mMaxGas < nextGasRemain ? mMaxGas : nextGasRemain;
+        setGas(nextGasRemain);
+    }
+
+    private void setGas(float gas)
+    {
+        RemainGas = gas;
+        UIController.SetRemainGas(gas);
     }
 
     private void processClickMove()
@@ -57,13 +66,22 @@ public class CarController : MonoBehaviour
 
     private void ConsumeGas()
     {
-        RemainGas -= Time.deltaTime * mConsumeGasPerSec;
-        if (RemainGas <= 0)
+        float nextGasRemain = RemainGas - Time.deltaTime * mConsumeGasPerSec;
+        if (nextGasRemain <= 0)
         {
-            Debug.Log("GameOver");
-            //TODO: GameOver
-            Destroy(gameObject);
+            setGas(0);
+            gameOver();
         }
+        else
+        {
+            setGas(nextGasRemain);
+        }
+    }
+
+    private void gameOver()
+    {
+        UIController.GameOver();
+        Destroy(gameObject);
     }
 
     private bool moveCar(Dir dir)

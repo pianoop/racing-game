@@ -103,7 +103,7 @@ public class Lane : MonoBehaviour
 
         foreach (GameObject movingObject in removeList)
         {
-            MovingObjectsToReset.Remove(movingObject);
+            MovingObjectsToRemove.Remove(movingObject);
             Destroy(movingObject);
         }
     }
