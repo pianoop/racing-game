@@ -5,6 +5,7 @@ using UnityEngine.Serialization;
 
 public class Lane : MonoBehaviour
 {
+    [SerializeField] ItemSpawner itemSpawner;
     public int LineCount;
     public float StartLineOffsetZ = 2f;
     
@@ -65,6 +66,17 @@ public class Lane : MonoBehaviour
     {
         MovingObjectsToReset.Add(movingObject);
     }
+
+    public bool RemoveMovingObject(GameObject movingObject)
+    {
+        bool ret = MovingObjectsToRemove.Remove(movingObject);
+        if (ret)
+        {
+            itemSpawner.ReturnObject(movingObject);
+        }
+
+        return ret;
+    }
     private void calcLaneValue()
     {
         Bounds bounds = GetComponent<Collider>().bounds;
@@ -103,8 +115,7 @@ public class Lane : MonoBehaviour
 
         foreach (GameObject movingObject in removeList)
         {
-            MovingObjectsToRemove.Remove(movingObject);
-            Destroy(movingObject);
+            RemoveMovingObject(movingObject);
         }
     }
     

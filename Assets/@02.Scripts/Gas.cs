@@ -14,8 +14,7 @@ public class Gas : MonoBehaviour, IInteractable
     public void OnInteract(GameObject car)
     {
         car.GetComponent<CarController>().AddGas(mGasAmount);
-        Road.MovingObjectsToRemove.Remove(this.gameObject);
-        Destroy(this.gameObject);
+        Road.RemoveMovingObject(this.gameObject);
     }
 
     public void OnTriggerEnter(Collider car)
